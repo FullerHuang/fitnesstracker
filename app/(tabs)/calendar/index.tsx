@@ -15,12 +15,16 @@ export default function CalendarScreen() {
   const [markedDates, setMarkedDates] = useState<Record<string, { marked: boolean }>>({});
 
   useEffect(() => {
-    const dates = getDatesWithSessions();
-    const marks: Record<string, { marked: boolean }> = {};
-    dates.forEach((d) => {
-      marks[d] = { marked: true };
-    });
-    setMarkedDates(marks);
+    try {
+      const dates = getDatesWithSessions();
+      const marks: Record<string, { marked: boolean }> = {};
+      dates.forEach((d) => {
+        marks[d] = { marked: true };
+      });
+      setMarkedDates(marks);
+    } catch {
+      setMarkedDates({});
+    }
   }, [selectedDate, currentSessions]);
 
   useEffect(() => {

@@ -83,7 +83,9 @@ export function deleteExercise(id: string): void {
 }
 
 export function seedDefaultExercises(defaults: { name: string; category: string }[]): void {
-  const db = getDatabase();
+  let db;
+  try { db = getDatabase(); } catch { return; }
+
   const existing = db.getFirstSync<{ cnt: number }>(
     'SELECT COUNT(*) as cnt FROM exercises WHERE is_default = 1;'
   );

@@ -13,7 +13,6 @@ export default function ExercisesScreen() {
     categories,
     loadExercises,
     loadCategories,
-    seedDefaults,
     addExercise,
     removeExercise,
   } = useExerciseStore();
@@ -28,12 +27,6 @@ export default function ExercisesScreen() {
     loadExercises();
     loadCategories();
   }, []);
-
-  useEffect(() => {
-    if (exercises.length === 0) {
-      seedDefaults();
-    }
-  }, [exercises.length]);
 
   const displayed = selectedCategory
     ? exercises.filter((e) => e.category === selectedCategory)

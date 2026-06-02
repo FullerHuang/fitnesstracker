@@ -18,16 +18,17 @@ export default function StatsScreen() {
   const [totalSessions, setTotalSessions] = useState(0);
 
   useEffect(() => {
-    const db = getDatabase();
-    const dayResult = db.getFirstSync<{ cnt: number }>(
-      'SELECT COUNT(DISTINCT date) as cnt FROM training_sessions;'
-    );
-    setTotalDays(dayResult?.cnt ?? 0);
-    const sessionResult = db.getFirstSync<{ cnt: number }>(
-      'SELECT COUNT(*) as cnt FROM training_sessions;'
-    );
-    setTotalSessions(sessionResult?.cnt ?? 0);
-    const rows = db.getAllSync<StatRow>(
+    try {
+      const db = getDatabase();
+      const dayResult = db.getFirstSync<{ cnt: number }>(
+        'SELECT COUNT(DISTINCT date) as cnt FROM training_sessions;'
+      );
+      setTotalDays(dayResult?.cnt ?? 0);
+      const sessionResult = db.getFirstSync<{ cnt: number }>(
+        'SELECT COUNT(*) as cnt FROM training_sessions;'
+      );
+      setTotalSessions(sessionResult?.cnt ?? 0);
+      const rows = db.getAllSync<StatRow>(
       `SELECT
         e.name as exercise_name,
         e.category,
@@ -42,6 +43,11 @@ export default function StatsScreen() {
       ORDER BY session_count DESC;`
     );
     setStats(rows.filter((r) => r.session_count > 0));
+    } catch {
+      setTotalDays(0);
+      setTotalSessions(0);
+      setStats([]);
+    }
   }, []);
 
   const maxVolume = stats.length > 0 ? Math.max(...stats.map((s) => s.total_volume)) : 1;

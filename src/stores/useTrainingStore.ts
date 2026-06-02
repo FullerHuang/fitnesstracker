@@ -44,18 +44,30 @@ export const useTrainingStore = create<TrainingState>((set) => ({
   loading: false,
 
   loadSessionsByDate: (date) => {
-    const sessions = getSessionsByDate(date);
-    set({ currentSessions: sessions, loading: false });
+    try {
+      const sessions = getSessionsByDate(date);
+      set({ currentSessions: sessions, loading: false });
+    } catch {
+      set({ currentSessions: [], loading: false });
+    }
   },
 
   loadSessionDetail: (sessionId) => {
-    const session = getSessionById(sessionId);
-    const sets = getSetsBySession(sessionId);
-    set({ currentSessions: session ? [session] : [], currentSets: sets, loading: false });
+    try {
+      const session = getSessionById(sessionId);
+      const sets = getSetsBySession(sessionId);
+      set({ currentSessions: session ? [session] : [], currentSets: sets, loading: false });
+    } catch {
+      set({ currentSessions: [], currentSets: [], loading: false });
+    }
   },
 
   loadSessionsByExercise: (exerciseId) => {
-    return getSessionsByExercise(exerciseId);
+    try {
+      return getSessionsByExercise(exerciseId);
+    } catch {
+      return [];
+    }
   },
 
   addSession: (exerciseId, date) => {

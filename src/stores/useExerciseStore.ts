@@ -33,13 +33,21 @@ export const useExerciseStore = create<ExerciseState>((set, get) => ({
   loading: false,
 
   loadExercises: () => {
-    const exercises = getAllExercises();
-    set({ exercises, loading: false });
+    try {
+      const exercises = getAllExercises();
+      set({ exercises, loading: false });
+    } catch {
+      set({ exercises: [], loading: false });
+    }
   },
 
   loadCategories: () => {
-    const categories = getAllCategories();
-    set({ categories });
+    try {
+      const categories = getAllCategories();
+      set({ categories });
+    } catch {
+      set({ categories: [] });
+    }
   },
 
   addExercise: (input) => {

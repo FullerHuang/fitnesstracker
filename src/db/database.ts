@@ -1,8 +1,13 @@
+import { Platform } from 'react-native';
 import * as SQLite from 'expo-sqlite';
 
 let db: SQLite.SQLiteDatabase | null = null;
+let initialized = false;
 
 export function getDatabase(): SQLite.SQLiteDatabase {
+  if (Platform.OS === 'web') {
+    throw new Error('SQLite is not available on web. Use expo-sqlite async API or run on native.');
+  }
   if (!db) {
     db = SQLite.openDatabaseSync('fitness.db');
   }
@@ -10,6 +15,13 @@ export function getDatabase(): SQLite.SQLiteDatabase {
 }
 
 export function initializeDatabase(): void {
+  if (initialized) return;
+  if (Platform.OS === 'web') {
+    console.log('Database not available on web - app will run in preview mode.');
+    initialized = true;
+    return;
+  }
+
   const database = getDatabase();
 
   database.execSync('PRAGMA journal_mode = WAL;');
@@ -73,4 +85,9 @@ export function initializeDatabase(): void {
     CREATE INDEX IF NOT EXISTS idx_sessions_exercise ON training_sessions(exercise_id);
     CREATE INDEX IF NOT EXISTS idx_sets_session ON training_sets(session_id);
   `);
+
+  initialized = true;
 }
+
+// Auto-initialize at module import time (before any React component renders)
+initializeDatabase();
