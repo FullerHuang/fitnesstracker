@@ -5,8 +5,8 @@ let db: SQLite.SQLiteDatabase | null = null;
 let initialized = false;
 
 export function getDatabase(): SQLite.SQLiteDatabase {
-  if (Platform.OS === 'web') {
-    throw new Error('SQLite is not available on web. Use expo-sqlite async API or run on native.');
+  if (Platform.OS === 'web' || Platform.OS === 'android') {
+    throw new Error(`SQLite sync API is not available on ${Platform.OS}.`);
   }
   if (!db) {
     db = SQLite.openDatabaseSync('fitness.db');
@@ -16,8 +16,8 @@ export function getDatabase(): SQLite.SQLiteDatabase {
 
 export function initializeDatabase(): void {
   if (initialized) return;
-  if (Platform.OS === 'web') {
-    console.log('Database not available on web - app will run in preview mode.');
+  if (Platform.OS === 'web' || Platform.OS === 'android') {
+    console.log(`Database not available on ${Platform.OS} — app will run in preview mode.`);
     initialized = true;
     return;
   }
@@ -89,9 +89,3 @@ export function initializeDatabase(): void {
   initialized = true;
 }
 
-// Auto-initialize at module import time (before any React component renders)
-try {
-  initializeDatabase();
-} catch (e) {
-  console.error('Database initialization failed:', e);
-}
