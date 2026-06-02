@@ -90,4 +90,8 @@ export function initializeDatabase(): void {
 }
 
 // Auto-initialize at module import time (before any React component renders)
-initializeDatabase();
+try {
+  initializeDatabase();
+} catch (e) {
+  console.error('Database initialization failed:', e);
+}

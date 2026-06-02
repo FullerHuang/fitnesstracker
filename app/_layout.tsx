@@ -7,8 +7,12 @@ import { DEFAULT_EXERCISES } from '@/constants/defaultExercises';
 
 export default function RootLayout() {
   useEffect(() => {
-    initializeDatabase();
-    seedDefaultExercises(DEFAULT_EXERCISES);
+    try {
+      initializeDatabase();
+      seedDefaultExercises(DEFAULT_EXERCISES);
+    } catch (e) {
+      console.error('App init failed:', e);
+    }
   }, []);
 
   return (
