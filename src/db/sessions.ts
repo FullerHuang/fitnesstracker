@@ -104,3 +104,16 @@ export function getDatesWithSessions(): string[] {
   );
   return rows.map((r) => r.date);
 }
+
+export function getAllSessions(): TrainingSession[] {
+  const db = getDatabase();
+  return db.getAllSync<TrainingSession>('SELECT * FROM training_sessions ORDER BY date DESC;');
+}
+
+export function importSession(row: TrainingSession): void {
+  const db = getDatabase();
+  db.runSync(
+    'INSERT OR REPLACE INTO training_sessions (id, exercise_id, date, notes, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?);',
+    [row.id, row.exercise_id, row.date, row.notes, row.created_at, row.updated_at]
+  );
+}

@@ -61,3 +61,16 @@ export function deleteVideo(id: string): void {
   const db = getDatabase();
   db.runSync('DELETE FROM exercise_videos WHERE id = ?;', [id]);
 }
+
+export function getAllVideos(): ExerciseVideo[] {
+  const db = getDatabase();
+  return db.getAllSync<ExerciseVideo>('SELECT * FROM exercise_videos ORDER BY created_at;');
+}
+
+export function importVideo(row: ExerciseVideo): void {
+  const db = getDatabase();
+  db.runSync(
+    'INSERT OR REPLACE INTO exercise_videos (id, exercise_id, session_id, url, platform, title, created_at) VALUES (?, ?, ?, ?, ?, ?, ?);',
+    [row.id, row.exercise_id, row.session_id, row.url, row.platform, row.title, row.created_at]
+  );
+}

@@ -85,3 +85,16 @@ export function deleteSetsBySession(sessionId: string): void {
   const db = getDatabase();
   db.runSync('DELETE FROM training_sets WHERE session_id = ?;', [sessionId]);
 }
+
+export function getAllSets(): TrainingSet[] {
+  const db = getDatabase();
+  return db.getAllSync<TrainingSet>('SELECT * FROM training_sets ORDER BY session_id, set_number;');
+}
+
+export function importSet(row: TrainingSet): void {
+  const db = getDatabase();
+  db.runSync(
+    'INSERT OR REPLACE INTO training_sets (id, session_id, set_number, weight, reps, rpe, is_pr, extra_fields, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);',
+    [row.id, row.session_id, row.set_number, row.weight, row.reps, row.rpe, row.is_pr, row.extra_fields, row.created_at]
+  );
+}

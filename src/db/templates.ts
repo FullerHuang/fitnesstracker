@@ -68,3 +68,11 @@ export function parseTemplateData(template: Template): TemplateExercise[] {
 export function getTemplateExerciseCount(template: Template): number {
   return parseTemplateData(template).length;
 }
+
+export function importTemplate(row: Template): void {
+  const db = getDatabase();
+  db.runSync(
+    'INSERT OR REPLACE INTO templates (id, name, data, created_at) VALUES (?, ?, ?, ?);',
+    [row.id, row.name, row.data, row.created_at]
+  );
+}

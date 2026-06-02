@@ -100,3 +100,11 @@ export function seedDefaultExercises(defaults: { name: string; category: string 
   }
   stmt.finalizeSync();
 }
+
+export function importExercise(row: Exercise): void {
+  const db = getDatabase();
+  db.runSync(
+    'INSERT OR REPLACE INTO exercises (id, name, category, is_default, notes, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?);',
+    [row.id, row.name, row.category, row.is_default, row.notes, row.created_at, row.updated_at]
+  );
+}
