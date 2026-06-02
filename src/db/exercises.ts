@@ -86,19 +86,24 @@ export function seedDefaultExercises(defaults: { name: string; category: string 
   let db;
   try { db = getDatabase(); } catch { return; }
 
-  const existing = db.getFirstSync<{ cnt: number }>(
-    'SELECT COUNT(*) as cnt FROM exercises WHERE is_default = 1;'
+  const defaultNames = defaults.map((d) => d.name);
+  const placeholders = defaultNames.map(() => '?').join(',');
+
+  // 删除不在新列表中的旧默认动作
+  db.runSync(
+    `DELETE FROM exercises WHERE is_default = 1 AND name NOT IN (${placeholders});`,
+    defaultNames
   );
-  if (existing && existing.cnt > 0) return;
 
   const now = Date.now();
-  const stmt = db.prepareSync(
-    "INSERT INTO exercises (id, name, category, is_default, notes, created_at, updated_at) VALUES (?, ?, ?, 1, '', ?, ?);"
-  );
   for (const ex of defaults) {
-    stmt.executeSync([generateId(), ex.name, ex.category, now, now]);
+    const exists = db.getFirstSync('SELECT 1 FROM exercises WHERE name = ?;', [ex.name]);
+    if (exists) continue;
+    db.runSync(
+      'INSERT INTO exercises (id, name, category, is_default, notes, created_at, updated_at) VALUES (?, ?, ?, 1, ?, ?, ?);',
+      [generateId(), ex.name, ex.category, now, now]
+    );
   }
-  stmt.finalizeSync();
 }
 
 export function importExercise(row: Exercise): void {
