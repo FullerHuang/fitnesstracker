@@ -5,12 +5,15 @@ import {
   ScrollView,
   Pressable,
   TextInput,
+  Modal,
   Alert,
   StyleSheet,
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useExerciseStore } from '@/stores/useExerciseStore';
 import { useTrainingStore } from '@/stores/useTrainingStore';
+import { useTemplateStore } from '@/stores/useTemplateStore';
+import { parseTemplateData } from '@/db/templates';
 import { SetEditor } from '@/components/SetEditor';
 import { SetData } from '@/components/SetRow';
 import { addVideo } from '@/db/videos';
@@ -21,6 +24,7 @@ export default function RecordScreen() {
   const router = useRouter();
   const { exercises, loadExercises } = useExerciseStore();
   const { loadSessionsByDate } = useTrainingStore();
+  const { templates, loadTemplates } = useTemplateStore();
 
   const [step, setStep] = useState<'select' | 'record'>('select');
   const [selectedExerciseId, setSelectedExerciseId] = useState<string | null>(null);
@@ -28,9 +32,11 @@ export default function RecordScreen() {
   const [notes, setNotes] = useState('');
   const [videoUrl, setVideoUrl] = useState('');
   const [videoTitle, setVideoTitle] = useState('');
+  const [showTemplateModal, setShowTemplateModal] = useState(false);
 
   useEffect(() => {
     loadExercises();
+    loadTemplates();
   }, []);
 
   const handleStart = () => {
@@ -81,6 +87,44 @@ export default function RecordScreen() {
     router.back();
   };
 
+  const handleImportTemplate = (templateId: string) => {
+    const template = templates.find((t) => t.id === templateId);
+    if (!template) return;
+
+    const data = parseTemplateData(template);
+    const { addSession, addSet } = useTrainingStore.getState();
+    let created = 0;
+    let skipped = 0;
+
+    data.forEach((ex) => {
+      const match = useExerciseStore.getState().exercises.find((e) => e.id === ex.exercise_id);
+      if (!match) {
+        skipped++;
+        return;
+      }
+      const session = addSession(match.id, date);
+      ex.sets.forEach((s) => {
+        addSet({
+          session_id: session.id,
+          set_number: s.set_number,
+          weight: s.weight,
+          reps: s.reps,
+          rpe: s.rpe,
+          is_pr: s.is_pr,
+        });
+      });
+      created++;
+    });
+
+    setShowTemplateModal(false);
+    loadSessionsByDate(date);
+
+    let msg = `成功导入 ${created} 个动作`;
+    if (skipped > 0) msg += `，跳过了 ${skipped} 个（原动作已删除）`;
+    Alert.alert('导入完成', msg);
+    router.back();
+  };
+
   const selectedExercise = exercises.find((e) => e.id === selectedExerciseId);
 
   if (step === 'select') {
@@ -89,6 +133,10 @@ export default function RecordScreen() {
         <Text style={styles.stepIndicator}>第 1 步 / 共 2 步</Text>
         <Text style={styles.stepTitle}>选择训练动作</Text>
         <Text style={styles.stepSubtitle}>{date}</Text>
+
+        <Pressable style={styles.templateImportBtn} onPress={() => setShowTemplateModal(true)}>
+          <Text style={styles.templateImportText}>📋 从模板导入</Text>
+        </Pressable>
 
         <ScrollView style={styles.list} contentContainerStyle={{ paddingBottom: 120 }}>
           {exercises.map((ex) => {
@@ -125,6 +173,42 @@ export default function RecordScreen() {
             </Text>
           </Pressable>
         </View>
+
+        <Modal visible={showTemplateModal} transparent animationType="slide">
+          <View style={styles.templateModalOverlay}>
+            <View style={styles.templateModalSheet}>
+              <View style={styles.templateModalHandle} />
+              <Text style={styles.templateModalTitle}>选择模板</Text>
+              {templates.length === 0 ? (
+                <Text style={styles.templateEmptyText}>还没有保存模板</Text>
+              ) : (
+                <ScrollView style={styles.templateList}>
+                  {templates.map((tpl) => {
+                    const exs = parseTemplateData(tpl);
+                    return (
+                      <Pressable
+                        key={tpl.id}
+                        style={styles.templateOption}
+                        onPress={() => handleImportTemplate(tpl.id)}
+                      >
+                        <Text style={styles.templateOptionName}>{tpl.name}</Text>
+                        <Text style={styles.templateOptionMeta}>
+                          {exs.length} 个动作 · {exs.reduce((sum, ex) => sum + ex.sets.length, 0)} 组
+                        </Text>
+                      </Pressable>
+                    );
+                  })}
+                </ScrollView>
+              )}
+              <Pressable
+                style={styles.templateModalCancel}
+                onPress={() => setShowTemplateModal(false)}
+              >
+                <Text style={styles.templateModalCancelText}>取消</Text>
+              </Pressable>
+            </View>
+          </View>
+        </Modal>
       </View>
     );
   }
@@ -211,6 +295,19 @@ const styles = StyleSheet.create({
     marginTop: 4,
     marginBottom: 16,
   },
+  templateImportBtn: {
+    marginHorizontal: 16,
+    marginTop: 12,
+    marginBottom: 8,
+    paddingVertical: 14,
+    borderRadius: 12,
+    backgroundColor: '#F0F0F0',
+    borderWidth: 1,
+    borderColor: '#E8E8E8',
+    borderStyle: 'dashed',
+    alignItems: 'center',
+  },
+  templateImportText: { color: '#FF6B35', fontSize: 15, fontWeight: '600' },
   list: { flex: 1 },
   exerciseItem: {
     flexDirection: 'row',
@@ -326,4 +423,56 @@ const styles = StyleSheet.create({
     backgroundColor: '#FF6B35',
   },
   saveText: { color: '#fff', fontSize: 15, fontWeight: '700' },
+  templateModalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    justifyContent: 'flex-end',
+  },
+  templateModalSheet: {
+    backgroundColor: '#FFFFFF',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    paddingBottom: 32,
+    maxHeight: '60%',
+  },
+  templateModalHandle: {
+    width: 36,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: '#DDDDDD',
+    alignSelf: 'center',
+    marginTop: 12,
+    marginBottom: 16,
+  },
+  templateModalTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#111111',
+    textAlign: 'center',
+    marginBottom: 12,
+  },
+  templateEmptyText: {
+    fontSize: 14,
+    color: '#777777',
+    textAlign: 'center',
+    paddingVertical: 32,
+  },
+  templateList: { maxHeight: 300 },
+  templateOption: {
+    paddingVertical: 14,
+    paddingHorizontal: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F0F0F0',
+  },
+  templateOptionName: { fontSize: 16, fontWeight: '600', color: '#111111' },
+  templateOptionMeta: { fontSize: 12, color: '#777777', marginTop: 2 },
+  templateModalCancel: {
+    marginTop: 8,
+    marginHorizontal: 16,
+    paddingVertical: 14,
+    borderRadius: 12,
+    backgroundColor: '#F0F0F0',
+    alignItems: 'center',
+  },
+  templateModalCancelText: { color: '#111111', fontSize: 16, fontWeight: '600' },
 });
