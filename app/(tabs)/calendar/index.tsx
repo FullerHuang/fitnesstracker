@@ -1,10 +1,13 @@
 import { useEffect, useState, useCallback } from 'react';
-import { View, Text, ScrollView, Pressable, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, Pressable, TextInput, Modal, Alert, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Calendar, DateData } from 'react-native-calendars';
 import { useCalendarStore } from '@/stores/useCalendarStore';
 import { useTrainingStore } from '@/stores/useTrainingStore';
+import { useTemplateStore } from '@/stores/useTemplateStore';
 import { getDatesWithSessions } from '@/db/sessions';
+import { getSetsBySession } from '@/db/sets';
+import { TemplateExercise } from '@/db/templates';
 import { ExerciseCard } from '@/components/ExerciseCard';
 import { EmptyState } from '@/components/EmptyState';
 
@@ -12,7 +15,10 @@ export default function CalendarScreen() {
   const router = useRouter();
   const { selectedDate, setSelectedDate } = useCalendarStore();
   const { currentSessions, loadSessionsByDate } = useTrainingStore();
+  const { addTemplate } = useTemplateStore();
   const [markedDates, setMarkedDates] = useState<Record<string, { marked: boolean }>>({});
+  const [showTemplateModal, setShowTemplateModal] = useState(false);
+  const [templateName, setTemplateName] = useState('');
 
   useEffect(() => {
     try {
@@ -40,6 +46,33 @@ export default function CalendarScreen() {
 
   const today = new Date().toISOString().split('T')[0];
   const isToday = selectedDate === today;
+
+  const handleSaveAsTemplate = () => {
+    setTemplateName(selectedDate + ' 训练');
+    setShowTemplateModal(true);
+  };
+
+  const confirmSaveTemplate = () => {
+    if (!templateName.trim()) {
+      Alert.alert('名称不能为空');
+      return;
+    }
+    const data: TemplateExercise[] = currentSessions.map((s) => ({
+      exercise_id: s.exercise_id,
+      exercise_name: s.exercise_name,
+      category: s.category,
+      sets: getSetsBySession(s.id).map((ts) => ({
+        set_number: ts.set_number,
+        weight: ts.weight,
+        reps: ts.reps,
+        rpe: ts.rpe,
+        is_pr: ts.is_pr === 1,
+      })),
+    }));
+    addTemplate(templateName.trim(), data);
+    setShowTemplateModal(false);
+    Alert.alert('保存成功', `模板「${templateName.trim()}」已保存`);
+  };
 
   return (
     <View style={styles.container}>
@@ -88,13 +121,20 @@ export default function CalendarScreen() {
           <Text style={styles.dayTitle}>{selectedDate}</Text>
           {isToday && <Text style={styles.todayBadge}>今天</Text>}
         </View>
-        <Pressable
-          style={styles.startBtn}
-          onPress={() => router.push(`/record/${selectedDate}`)}
-        >
-          <Text style={styles.startBtnIcon}>+</Text>
-          <Text style={styles.startBtnText}>记录训练</Text>
-        </Pressable>
+        <View style={styles.dayHeaderActions}>
+          {currentSessions.length > 0 && (
+            <Pressable style={styles.templateBtn} onPress={handleSaveAsTemplate}>
+              <Text style={styles.templateBtnText}>📋 存为模板</Text>
+            </Pressable>
+          )}
+          <Pressable
+            style={styles.startBtn}
+            onPress={() => router.push(`/record/${selectedDate}`)}
+          >
+            <Text style={styles.startBtnIcon}>+</Text>
+            <Text style={styles.startBtnText}>记录训练</Text>
+          </Pressable>
+        </View>
       </View>
 
       <ScrollView
@@ -120,6 +160,30 @@ export default function CalendarScreen() {
           ))
         )}
       </ScrollView>
+
+      <Modal visible={showTemplateModal} transparent animationType="fade">
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalCard}>
+            <Text style={styles.modalTitle}>保存为模板</Text>
+            <TextInput
+              style={styles.modalInput}
+              placeholder="模板名称"
+              placeholderTextColor="#999"
+              value={templateName}
+              onChangeText={setTemplateName}
+              autoFocus
+            />
+            <View style={styles.modalButtons}>
+              <Pressable style={styles.modalCancelBtn} onPress={() => setShowTemplateModal(false)}>
+                <Text style={styles.modalCancelText}>取消</Text>
+              </Pressable>
+              <Pressable style={styles.modalSaveBtn} onPress={confirmSaveTemplate}>
+                <Text style={styles.modalSaveText}>保存</Text>
+              </Pressable>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -145,6 +209,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginTop: 2,
   },
+  dayHeaderActions: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   startBtn: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -161,6 +226,48 @@ const styles = StyleSheet.create({
   },
   startBtnIcon: { color: '#fff', fontSize: 18, fontWeight: '300' },
   startBtnText: { color: '#fff', fontSize: 14, fontWeight: '700' },
+  templateBtn: {
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    borderRadius: 10,
+    backgroundColor: '#F0F0F0',
+    borderWidth: 1,
+    borderColor: '#E8E8E8',
+  },
+  templateBtnText: { color: '#111111', fontSize: 14, fontWeight: '600' },
   sessionList: { flex: 1 },
   emptyList: { flexGrow: 1 },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalCard: {
+    width: 300,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    padding: 24,
+  },
+  modalTitle: { fontSize: 18, fontWeight: '700', color: '#111111', marginBottom: 16 },
+  modalInput: {
+    backgroundColor: '#F0F0F0',
+    color: '#111111',
+    borderRadius: 10,
+    padding: 14,
+    fontSize: 15,
+    borderWidth: 1,
+    borderColor: '#E8E8E8',
+    marginBottom: 16,
+  },
+  modalButtons: { flexDirection: 'row', justifyContent: 'flex-end', gap: 12 },
+  modalCancelBtn: { paddingVertical: 8, paddingHorizontal: 16 },
+  modalCancelText: { color: '#777777', fontSize: 15 },
+  modalSaveBtn: {
+    paddingVertical: 8,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    backgroundColor: '#FF6B35',
+  },
+  modalSaveText: { color: '#fff', fontSize: 15, fontWeight: '700' },
 });
