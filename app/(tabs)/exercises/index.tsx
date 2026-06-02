@@ -95,7 +95,7 @@ export default function ExercisesScreen() {
           <TextInput
             style={styles.addInput}
             placeholder="动作名称（必填）"
-            placeholderTextColor="#555"
+            placeholderTextColor="#999"
             value={newName}
             onChangeText={setNewName}
             autoFocus
@@ -103,7 +103,7 @@ export default function ExercisesScreen() {
           <TextInput
             style={styles.addInput}
             placeholder="分类，如：功能性训练（选填）"
-            placeholderTextColor="#555"
+            placeholderTextColor="#999"
             value={newCategory}
             onChangeText={setNewCategory}
           />
@@ -135,7 +135,7 @@ export default function ExercisesScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#1a1a2e' },
+  container: { flex: 1, backgroundColor: '#F8F9FA' },
   categoryBar: {
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -143,21 +143,21 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     gap: 8,
     borderBottomWidth: 1,
-    borderBottomColor: '#0f3460',
+    borderBottomColor: '#F0F0F0',
   },
   chip: {
     paddingHorizontal: 14,
     paddingVertical: 7,
     borderRadius: 20,
-    backgroundColor: '#16213e',
+    backgroundColor: '#FFFFFF',
     borderWidth: 1,
     borderColor: 'transparent',
   },
   chipActive: {
-    backgroundColor: '#e94560',
-    borderColor: '#e94560',
+    backgroundColor: '#FF6B35',
+    borderColor: '#FF6B35',
   },
-  chipText: { color: '#8a8a8a', fontSize: 13, fontWeight: '500' },
+  chipText: { color: '#777777', fontSize: 13, fontWeight: '500' },
   chipTextActive: { color: '#fff', fontWeight: '700' },
   emptyList: { flexGrow: 1 },
   addPanel: {
@@ -167,11 +167,11 @@ const styles = StyleSheet.create({
     right: 0,
     padding: 20,
     paddingBottom: 32,
-    backgroundColor: '#16213e',
+    backgroundColor: '#FFFFFF',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     borderTopWidth: 1,
-    borderTopColor: '#0f3460',
+    borderTopColor: '#F0F0F0',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: -4 },
     shadowOpacity: 0.3,
@@ -182,28 +182,28 @@ const styles = StyleSheet.create({
     width: 36,
     height: 4,
     borderRadius: 2,
-    backgroundColor: '#333',
+    backgroundColor: '#DDDDDD',
     alignSelf: 'center',
     marginBottom: 16,
   },
-  addPanelTitle: { fontSize: 17, fontWeight: '700', color: '#e0e0e0', marginBottom: 16 },
+  addPanelTitle: { fontSize: 17, fontWeight: '700', color: '#111111', marginBottom: 16 },
   addInput: {
-    backgroundColor: '#0f3460',
-    color: '#e0e0e0',
+    backgroundColor: '#F0F0F0',
+    color: '#111111',
     borderRadius: 10,
     padding: 14,
     marginBottom: 10,
     fontSize: 15,
     borderWidth: 1,
-    borderColor: '#1a508b',
+    borderColor: '#E8E8E8',
   },
   addButtons: { flexDirection: 'row', justifyContent: 'flex-end', gap: 12, marginTop: 8 },
   cancelBtn: { paddingVertical: 10, paddingHorizontal: 20 },
-  cancelText: { color: '#8a8a8a', fontSize: 15, fontWeight: '500' },
+  cancelText: { color: '#777777', fontSize: 15, fontWeight: '500' },
   saveBtn: {
     paddingVertical: 10,
     paddingHorizontal: 24,
-    backgroundColor: '#e94560',
+    backgroundColor: '#FF6B35',
     borderRadius: 10,
   },
   saveText: { color: '#fff', fontSize: 15, fontWeight: '700' },
@@ -215,11 +215,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingVertical: 16,
     borderRadius: 14,
-    backgroundColor: '#e94560',
+    backgroundColor: '#FF6B35',
     alignItems: 'center',
     justifyContent: 'center',
     gap: 6,
-    shadowColor: '#e94560',
+    shadowColor: '#FF6B35',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,

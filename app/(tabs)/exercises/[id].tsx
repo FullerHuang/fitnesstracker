@@ -108,7 +108,7 @@ export default function ExerciseDetailScreen() {
           <TextInput
             style={styles.addInput}
             placeholder="视频链接（B站 / 抖音 / YouTube）"
-            placeholderTextColor="#555"
+            placeholderTextColor="#999"
             value={videoUrl}
             onChangeText={setVideoUrl}
             autoCapitalize="none"
@@ -117,7 +117,7 @@ export default function ExerciseDetailScreen() {
           <TextInput
             style={styles.addInput}
             placeholder="标题（选填）"
-            placeholderTextColor="#555"
+            placeholderTextColor="#999"
             value={videoTitle}
             onChangeText={setVideoTitle}
           />
@@ -148,23 +148,23 @@ export default function ExerciseDetailScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#1a1a2e' },
+  container: { flex: 1, backgroundColor: '#F8F9FA' },
   heroSection: {
     alignItems: 'center',
     paddingVertical: 28,
     paddingHorizontal: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#0f3460',
+    borderBottomColor: '#F0F0F0',
   },
   heroName: { fontSize: 26, fontWeight: '800', color: '#fff', letterSpacing: 1 },
   heroBadge: {
     marginTop: 8,
     paddingHorizontal: 14,
     paddingVertical: 4,
-    backgroundColor: '#0f3460',
+    backgroundColor: '#F0F0F0',
     borderRadius: 12,
   },
-  heroBadgeText: { fontSize: 13, color: '#e94560', fontWeight: '600' },
+  heroBadgeText: { fontSize: 13, color: '#FF6B35', fontWeight: '600' },
   sectionHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -173,34 +173,34 @@ const styles = StyleSheet.create({
     paddingTop: 28,
     paddingBottom: 10,
   },
-  sectionTitle: { fontSize: 18, fontWeight: '700', color: '#e0e0e0' },
-  sectionCount: { fontSize: 13, color: '#e94560', fontWeight: '600' },
+  sectionTitle: { fontSize: 18, fontWeight: '700', color: '#111111' },
+  sectionCount: { fontSize: 13, color: '#FF6B35', fontWeight: '600' },
   addPanel: {
     marginHorizontal: 16,
     marginTop: 8,
     padding: 14,
-    backgroundColor: '#16213e',
+    backgroundColor: '#FFFFFF',
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: '#0f3460',
+    borderColor: '#F0F0F0',
   },
   addInput: {
-    backgroundColor: '#0f3460',
-    color: '#e0e0e0',
+    backgroundColor: '#F0F0F0',
+    color: '#111111',
     borderRadius: 8,
     padding: 12,
     marginBottom: 8,
     fontSize: 14,
     borderWidth: 1,
-    borderColor: '#1a508b',
+    borderColor: '#E8E8E8',
   },
   addButtons: { flexDirection: 'row', justifyContent: 'flex-end', gap: 12 },
   cancelBtn: { paddingVertical: 8, paddingHorizontal: 16 },
-  cancelText: { color: '#8a8a8a', fontSize: 14 },
+  cancelText: { color: '#777777', fontSize: 14 },
   saveBtnSmall: {
     paddingVertical: 8,
     paddingHorizontal: 18,
-    backgroundColor: '#e94560',
+    backgroundColor: '#FF6B35',
     borderRadius: 8,
   },
   saveTextSmall: { color: '#fff', fontSize: 14, fontWeight: '600' },
@@ -208,12 +208,12 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
     marginTop: 10,
     paddingVertical: 14,
-    backgroundColor: '#0f3460',
+    backgroundColor: '#F0F0F0',
     borderRadius: 10,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#1a508b',
+    borderColor: '#E8E8E8',
     borderStyle: 'dashed',
   },
-  addVideoBtnText: { color: '#e94560', fontSize: 14, fontWeight: '600' },
+  addVideoBtnText: { color: '#FF6B35', fontSize: 14, fontWeight: '600' },
 });

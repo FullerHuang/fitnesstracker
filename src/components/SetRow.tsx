@@ -25,7 +25,7 @@ export function SetRow({ set, onChange, onDelete }: Props) {
           keyboardType="numeric"
           value={set.weight > 0 ? String(set.weight) : ''}
           placeholder="0"
-          placeholderTextColor="#555"
+          placeholderTextColor="#999"
           onChangeText={(v) => onChange({ ...set, weight: parseFloat(v) || 0 })}
         />
       </View>
@@ -36,7 +36,7 @@ export function SetRow({ set, onChange, onDelete }: Props) {
           keyboardType="numeric"
           value={set.reps > 0 ? String(set.reps) : ''}
           placeholder="0"
-          placeholderTextColor="#555"
+          placeholderTextColor="#999"
           onChangeText={(v) => onChange({ ...set, reps: parseInt(v) || 0 })}
         />
       </View>
@@ -47,7 +47,7 @@ export function SetRow({ set, onChange, onDelete }: Props) {
           keyboardType="numeric"
           value={set.rpe !== null ? String(set.rpe) : ''}
           placeholder="-"
-          placeholderTextColor="#555"
+          placeholderTextColor="#999"
           onChangeText={(v) => onChange({ ...set, rpe: v ? parseFloat(v) : null })}
         />
       </View>
@@ -56,7 +56,7 @@ export function SetRow({ set, onChange, onDelete }: Props) {
         <Switch
           value={set.is_pr}
           onValueChange={(v) => onChange({ ...set, is_pr: v })}
-          trackColor={{ false: '#333', true: '#e94560' }}
+          trackColor={{ false: '#DDDDDD', true: '#FF6B35' }}
         />
       </View>
       <Text style={styles.deleteBtn} onPress={onDelete}>
@@ -74,15 +74,15 @@ const styles = StyleSheet.create({
     padding: 8,
     marginHorizontal: 16,
     marginVertical: 2,
-    backgroundColor: '#16213e',
+    backgroundColor: '#FFFFFF',
     borderRadius: 8,
   },
-  setNum: { width: 40, fontSize: 12, color: '#8a8a8a' },
+  setNum: { width: 40, fontSize: 12, color: '#777777' },
   field: { alignItems: 'center' },
-  label: { fontSize: 10, color: '#8a8a8a', marginBottom: 2 },
+  label: { fontSize: 10, color: '#777777', marginBottom: 2 },
   input: {
-    backgroundColor: '#0f3460',
-    color: '#e0e0e0',
+    backgroundColor: '#F0F0F0',
+    color: '#111111',
     borderRadius: 6,
     paddingVertical: 4,
     paddingHorizontal: 8,
@@ -92,5 +92,5 @@ const styles = StyleSheet.create({
   },
   inputSmall: { width: 44 },
   prRow: { alignItems: 'center' },
-  deleteBtn: { color: '#e94560', fontSize: 16, fontWeight: '700', padding: 4 },
+  deleteBtn: { color: '#FF6B35', fontSize: 16, fontWeight: '700', padding: 4 },
 });

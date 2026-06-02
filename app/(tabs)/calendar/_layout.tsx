@@ -4,8 +4,8 @@ export default function CalendarLayout() {
   return (
     <Stack
       screenOptions={{
-        headerStyle: { backgroundColor: '#1a1a2e' },
-        headerTintColor: '#e0e0e0',
+        headerStyle: { backgroundColor: '#F8F9FA' },
+        headerTintColor: '#111111',
         headerTitleStyle: { fontWeight: '700' },
       }}
     >

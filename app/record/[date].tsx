@@ -146,7 +146,7 @@ export default function RecordScreen() {
           <TextInput
             style={styles.addInput}
             placeholder="视频链接（选填）"
-            placeholderTextColor="#555"
+            placeholderTextColor="#999"
             value={videoUrl}
             onChangeText={setVideoUrl}
             autoCapitalize="none"
@@ -154,7 +154,7 @@ export default function RecordScreen() {
           <TextInput
             style={styles.addInputSmall}
             placeholder="标题"
-            placeholderTextColor="#555"
+            placeholderTextColor="#999"
             value={videoTitle}
             onChangeText={setVideoTitle}
           />
@@ -166,7 +166,7 @@ export default function RecordScreen() {
         <TextInput
           style={styles.notesInput}
           placeholder="记录这次训练的心得感受..."
-          placeholderTextColor="#555"
+          placeholderTextColor="#999"
           value={notes}
           onChangeText={setNotes}
           multiline
@@ -187,11 +187,11 @@ export default function RecordScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#1a1a2e' },
+  container: { flex: 1, backgroundColor: '#F8F9FA' },
   stepIndicator: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#e94560',
+    color: '#FF6B35',
     textAlign: 'center',
     marginTop: 16,
     letterSpacing: 2,
@@ -200,13 +200,13 @@ const styles = StyleSheet.create({
   stepTitle: {
     fontSize: 24,
     fontWeight: '800',
-    color: '#e0e0e0',
+    color: '#111111',
     textAlign: 'center',
     marginTop: 4,
   },
   stepSubtitle: {
     fontSize: 14,
-    color: '#8a8a8a',
+    color: '#777777',
     textAlign: 'center',
     marginTop: 4,
     marginBottom: 16,
@@ -219,14 +219,14 @@ const styles = StyleSheet.create({
     padding: 16,
     marginHorizontal: 16,
     marginVertical: 3,
-    backgroundColor: '#16213e',
+    backgroundColor: '#FFFFFF',
     borderRadius: 12,
     borderWidth: 1,
     borderColor: 'transparent',
   },
   exerciseItemActive: {
-    borderColor: '#e94560',
-    backgroundColor: '#0f3460',
+    borderColor: '#FF6B35',
+    backgroundColor: '#F0F0F0',
   },
   exerciseLeft: { flexDirection: 'row', alignItems: 'center', gap: 12 },
   radio: {
@@ -234,76 +234,76 @@ const styles = StyleSheet.create({
     height: 22,
     borderRadius: 11,
     borderWidth: 2,
-    borderColor: '#555',
+    borderColor: '#E8E8E8',
     justifyContent: 'center',
     alignItems: 'center',
   },
-  radioActive: { borderColor: '#e94560' },
+  radioActive: { borderColor: '#FF6B35' },
   radioInner: {
     width: 12,
     height: 12,
     borderRadius: 6,
-    backgroundColor: '#e94560',
+    backgroundColor: '#FF6B35',
   },
-  exerciseName: { fontSize: 16, fontWeight: '600', color: '#e0e0e0' },
-  exerciseCat: { fontSize: 12, color: '#8a8a8a', marginTop: 2 },
+  exerciseName: { fontSize: 16, fontWeight: '600', color: '#111111' },
+  exerciseCat: { fontSize: 12, color: '#777777', marginTop: 2 },
   bottomBar: {
     position: 'absolute',
     bottom: 0,
     left: 0,
     right: 0,
     padding: 16,
-    backgroundColor: '#1a1a2e',
+    backgroundColor: '#F8F9FA',
     borderTopWidth: 1,
-    borderTopColor: '#0f3460',
+    borderTopColor: '#F0F0F0',
   },
   nextBtn: {
     paddingVertical: 16,
     borderRadius: 12,
-    backgroundColor: '#e94560',
+    backgroundColor: '#FF6B35',
     alignItems: 'center',
   },
-  nextBtnDisabled: { backgroundColor: '#333' },
+  nextBtnDisabled: { backgroundColor: '#F0F0F0' },
   nextBtnText: { color: '#fff', fontSize: 16, fontWeight: '700' },
   section: { marginTop: 24 },
   sectionTitle: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#e0e0e0',
+    color: '#111111',
     paddingHorizontal: 16,
     marginBottom: 10,
   },
   videoRow: { flexDirection: 'row', paddingHorizontal: 16, gap: 8 },
   addInput: {
     flex: 1,
-    backgroundColor: '#0f3460',
-    color: '#e0e0e0',
+    backgroundColor: '#F0F0F0',
+    color: '#111111',
     borderRadius: 10,
     padding: 12,
     fontSize: 14,
     borderWidth: 1,
-    borderColor: '#1a508b',
+    borderColor: '#E8E8E8',
   },
   addInputSmall: {
     width: 80,
-    backgroundColor: '#0f3460',
-    color: '#e0e0e0',
+    backgroundColor: '#F0F0F0',
+    color: '#111111',
     borderRadius: 10,
     padding: 12,
     fontSize: 14,
     borderWidth: 1,
-    borderColor: '#1a508b',
+    borderColor: '#E8E8E8',
   },
   notesInput: {
     marginHorizontal: 16,
-    backgroundColor: '#0f3460',
-    color: '#e0e0e0',
+    backgroundColor: '#F0F0F0',
+    color: '#111111',
     borderRadius: 10,
     padding: 14,
     fontSize: 14,
     minHeight: 100,
     borderWidth: 1,
-    borderColor: '#1a508b',
+    borderColor: '#E8E8E8',
   },
   bottomButtons: {
     flexDirection: 'row',
@@ -316,14 +316,14 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 24,
     borderRadius: 10,
-    backgroundColor: '#333',
+    backgroundColor: '#F0F0F0',
   },
-  cancelText: { color: '#e0e0e0', fontSize: 15, fontWeight: '500' },
+  cancelText: { color: '#111111', fontSize: 15, fontWeight: '500' },
   saveBtn: {
     paddingVertical: 12,
     paddingHorizontal: 28,
     borderRadius: 10,
-    backgroundColor: '#e94560',
+    backgroundColor: '#FF6B35',
   },
   saveText: { color: '#fff', fontSize: 15, fontWeight: '700' },
 });

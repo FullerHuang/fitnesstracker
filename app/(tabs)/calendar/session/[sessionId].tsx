@@ -113,7 +113,7 @@ export default function SessionDetailScreen() {
   if (!session) {
     return (
       <View style={styles.container}>
-        <Text style={{ color: '#e0e0e0', textAlign: 'center', marginTop: 40 }}>加载中...</Text>
+        <Text style={{ color: '#111111', textAlign: 'center', marginTop: 40 }}>加载中...</Text>
       </View>
     );
   }
@@ -170,7 +170,7 @@ export default function SessionDetailScreen() {
           <TextInput
             style={styles.addInput}
             placeholder="视频链接"
-            placeholderTextColor="#555"
+            placeholderTextColor="#999"
             value={videoUrl}
             onChangeText={setVideoUrl}
             autoCapitalize="none"
@@ -179,7 +179,7 @@ export default function SessionDetailScreen() {
           <TextInput
             style={styles.addInput}
             placeholder="标题（选填）"
-            placeholderTextColor="#555"
+            placeholderTextColor="#999"
             value={videoTitle}
             onChangeText={setVideoTitle}
           />
@@ -208,7 +208,7 @@ export default function SessionDetailScreen() {
         multiline
         textAlignVertical="top"
         placeholder="记录这次训练的心得..."
-        placeholderTextColor="#555"
+        placeholderTextColor="#999"
       />
       <Pressable style={styles.saveNotesBtn} onPress={handleSaveNotes}>
         <Text style={styles.saveNotesBtnText}>保存笔记</Text>
@@ -262,18 +262,18 @@ export default function SessionDetailScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#1a1a2e' },
+  container: { flex: 1, backgroundColor: '#F8F9FA' },
   hero: { alignItems: 'center', paddingVertical: 24, paddingHorizontal: 16 },
   heroName: { fontSize: 26, fontWeight: '800', color: '#fff', letterSpacing: 1 },
   heroMeta: { flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: 8 },
   heroBadge: {
     paddingHorizontal: 12,
     paddingVertical: 3,
-    backgroundColor: '#0f3460',
+    backgroundColor: '#F0F0F0',
     borderRadius: 10,
   },
-  heroBadgeText: { fontSize: 12, color: '#e94560', fontWeight: '600' },
-  heroDate: { fontSize: 14, color: '#8a8a8a' },
+  heroBadgeText: { fontSize: 12, color: '#FF6B35', fontWeight: '600' },
+  heroDate: { fontSize: 14, color: '#777777' },
   sectionHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -282,45 +282,45 @@ const styles = StyleSheet.create({
     paddingTop: 24,
     paddingBottom: 10,
   },
-  sectionTitle: { fontSize: 18, fontWeight: '700', color: '#e0e0e0' },
-  sectionCount: { fontSize: 13, color: '#e94560', fontWeight: '600' },
-  emptyHint: { color: '#555', textAlign: 'center', padding: 16, fontSize: 14 },
+  sectionTitle: { fontSize: 18, fontWeight: '700', color: '#111111' },
+  sectionCount: { fontSize: 13, color: '#FF6B35', fontWeight: '600' },
+  emptyHint: { color: '#999999', textAlign: 'center', padding: 16, fontSize: 14 },
   notesInput: {
     marginHorizontal: 16,
-    backgroundColor: '#0f3460',
-    color: '#e0e0e0',
+    backgroundColor: '#F0F0F0',
+    color: '#111111',
     borderRadius: 10,
     padding: 14,
     fontSize: 14,
     minHeight: 80,
     borderWidth: 1,
-    borderColor: '#1a508b',
+    borderColor: '#E8E8E8',
   },
   saveNotesBtn: {
     marginHorizontal: 16,
     marginTop: 10,
     paddingVertical: 12,
-    backgroundColor: '#0f3460',
+    backgroundColor: '#F0F0F0',
     borderRadius: 10,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#1a508b',
+    borderColor: '#E8E8E8',
   },
-  saveNotesBtnText: { color: '#e94560', fontSize: 14, fontWeight: '600' },
+  saveNotesBtnText: { color: '#FF6B35', fontSize: 14, fontWeight: '600' },
   imageGrid: { flexDirection: 'row', flexWrap: 'wrap', paddingHorizontal: 16, gap: 8 },
   thumb: { width: 80, height: 80, borderRadius: 10 },
   addImageBtn: {
     width: 80,
     height: 80,
     borderRadius: 10,
-    backgroundColor: '#0f3460',
+    backgroundColor: '#F0F0F0',
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#1a508b',
+    borderColor: '#E8E8E8',
     borderStyle: 'dashed',
   },
-  addImageBtnText: { color: '#e94560', fontSize: 32, fontWeight: '300' },
+  addImageBtnText: { color: '#FF6B35', fontSize: 32, fontWeight: '300' },
   deleteSessionBtn: {
     margin: 16,
     marginTop: 32,
@@ -328,36 +328,36 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     backgroundColor: '#1a0f0f',
     borderWidth: 1,
-    borderColor: '#e94560',
+    borderColor: '#FF6B35',
     alignItems: 'center',
   },
-  deleteSessionText: { color: '#e94560', fontSize: 15, fontWeight: '600' },
+  deleteSessionText: { color: '#FF6B35', fontSize: 15, fontWeight: '600' },
   addPanel: {
     marginHorizontal: 16,
     marginTop: 8,
     padding: 14,
-    backgroundColor: '#16213e',
+    backgroundColor: '#FFFFFF',
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: '#0f3460',
+    borderColor: '#F0F0F0',
   },
   addInput: {
-    backgroundColor: '#0f3460',
-    color: '#e0e0e0',
+    backgroundColor: '#F0F0F0',
+    color: '#111111',
     borderRadius: 8,
     padding: 12,
     marginBottom: 8,
     fontSize: 14,
     borderWidth: 1,
-    borderColor: '#1a508b',
+    borderColor: '#E8E8E8',
   },
   addButtons: { flexDirection: 'row', justifyContent: 'flex-end', gap: 12 },
   cancelBtn: { paddingVertical: 8, paddingHorizontal: 16 },
-  cancelText: { color: '#8a8a8a', fontSize: 14 },
+  cancelText: { color: '#777777', fontSize: 14 },
   saveBtnSmall: {
     paddingVertical: 8,
     paddingHorizontal: 18,
-    backgroundColor: '#e94560',
+    backgroundColor: '#FF6B35',
     borderRadius: 8,
   },
   saveTextSmall: { color: '#fff', fontSize: 14, fontWeight: '600' },
@@ -365,12 +365,12 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
     marginTop: 10,
     paddingVertical: 14,
-    backgroundColor: '#0f3460',
+    backgroundColor: '#F0F0F0',
     borderRadius: 10,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#1a508b',
+    borderColor: '#E8E8E8',
     borderStyle: 'dashed',
   },
-  addBtnText: { color: '#e94560', fontSize: 14, fontWeight: '600' },
+  addBtnText: { color: '#FF6B35', fontSize: 14, fontWeight: '600' },
 });

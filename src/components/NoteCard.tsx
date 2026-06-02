@@ -37,11 +37,11 @@ const styles = StyleSheet.create({
     padding: 12,
     marginHorizontal: 16,
     marginVertical: 4,
-    backgroundColor: '#16213e',
+    backgroundColor: '#FFFFFF',
     borderRadius: 10,
   },
-  content: { fontSize: 14, color: '#e0e0e0', lineHeight: 20, marginBottom: 8 },
-  placeholder: { fontSize: 14, color: '#555', fontStyle: 'italic' },
+  content: { fontSize: 14, color: '#111111', lineHeight: 20, marginBottom: 8 },
+  placeholder: { fontSize: 14, color: '#999999', fontStyle: 'italic' },
   imageRow: { flexDirection: 'row', gap: 6 },
   thumb: { width: 56, height: 56, borderRadius: 6 },
   moreBadge: {
@@ -52,5 +52,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  moreText: { color: '#e0e0e0', fontSize: 14, fontWeight: '600' },
+  moreText: { color: '#fff', fontSize: 14, fontWeight: '600' },
 });
