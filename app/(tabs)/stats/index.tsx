@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
-import { View, Text, ScrollView, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, Pressable, StyleSheet } from 'react-native';
 import { getDatabase } from '@/db/database';
 import { EmptyState } from '@/components/EmptyState';
+import { exportData, importData } from '@/utils/backup';
 
 interface StatRow {
   exercise_name: string;
@@ -122,6 +123,20 @@ export default function StatsScreen() {
           })}
         </>
       )}
+
+      <View style={styles.backupDivider} />
+      <Text style={styles.sectionTitle}>数据备份</Text>
+      <Text style={styles.sectionSubtitle}>导出训练数据为 JSON 文件，以后可以重新导入</Text>
+      <View style={styles.backupRow}>
+        <Pressable style={styles.backupBtn} onPress={exportData}>
+          <Text style={styles.backupBtnIcon}>📤</Text>
+          <Text style={styles.backupBtnText}>导出数据</Text>
+        </Pressable>
+        <Pressable style={styles.backupBtnOutline} onPress={importData}>
+          <Text style={styles.backupBtnIcon}>📥</Text>
+          <Text style={styles.backupBtnTextOutline}>导入数据</Text>
+        </Pressable>
+      </View>
     </ScrollView>
   );
 }
@@ -223,4 +238,31 @@ const styles = StyleSheet.create({
     textAlign: 'right',
     fontWeight: '500',
   },
+  backupDivider: { height: 1, backgroundColor: '#F0F0F0', marginHorizontal: 16, marginTop: 32 },
+  backupRow: { flexDirection: 'row', paddingHorizontal: 16, gap: 12, marginTop: 12 },
+  backupBtn: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    paddingVertical: 14,
+    borderRadius: 12,
+    backgroundColor: '#FF6B35',
+  },
+  backupBtnOutline: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    paddingVertical: 14,
+    borderRadius: 12,
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1.5,
+    borderColor: '#FF6B35',
+  },
+  backupBtnIcon: { fontSize: 16 },
+  backupBtnText: { color: '#fff', fontSize: 15, fontWeight: '700' },
+  backupBtnTextOutline: { color: '#FF6B35', fontSize: 15, fontWeight: '700' },
 });
