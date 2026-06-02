@@ -81,6 +81,13 @@ export function initializeDatabase(): void {
       FOREIGN KEY (session_id) REFERENCES training_sessions(id) ON DELETE CASCADE
     );
 
+    CREATE TABLE IF NOT EXISTS templates (
+      id TEXT PRIMARY KEY,
+      name TEXT NOT NULL,
+      data TEXT NOT NULL,
+      created_at INTEGER NOT NULL
+    );
+
     CREATE INDEX IF NOT EXISTS idx_sessions_date ON training_sessions(date);
     CREATE INDEX IF NOT EXISTS idx_sessions_exercise ON training_sessions(exercise_id);
     CREATE INDEX IF NOT EXISTS idx_sets_session ON training_sets(session_id);
