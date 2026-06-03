@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
-import { View, Text, FlatList, Pressable, TextInput, StyleSheet } from 'react-native';
+import { View, Text, FlatList, Pressable, TextInput, KeyboardAvoidingView, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useExerciseStore } from '@/stores/useExerciseStore';
 import { useTemplateStore } from '@/stores/useTemplateStore';
+import { useCustomStandardStore } from '@/stores/useCustomStandardStore';
 import { parseTemplateData } from '@/db/templates';
 import { ExerciseCard } from '@/components/ExerciseCard';
 import { EmptyState } from '@/components/EmptyState';
@@ -20,18 +21,22 @@ export default function ExercisesScreen() {
   } = useExerciseStore();
   const { templates, loadTemplates, removeTemplate } = useTemplateStore();
 
-  const [segment, setSegment] = useState<'exercises' | 'templates'>('exercises');
+  const [segment, setSegment] = useState<'exercises' | 'templates' | 'standards'>('exercises');
   const [showAdd, setShowAdd] = useState(false);
   const [newName, setNewName] = useState('');
   const [newCategory, setNewCategory] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
   const [deleteTemplateTarget, setDeleteTemplateTarget] = useState<string | null>(null);
+  const [showAddStandard, setShowAddStandard] = useState(false);
+  const [newStandardName, setNewStandardName] = useState('');
+  const { standards, addStandard, removeStandard } = useCustomStandardStore();
 
   useEffect(() => {
     loadExercises();
     loadCategories();
     loadTemplates();
+    useCustomStandardStore.getState().loadStandards();
   }, []);
 
   const displayed = selectedCategory
@@ -58,6 +63,7 @@ export default function ExercisesScreen() {
   };
 
   return (
+    <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
     <View style={styles.container}>
       {/* Segment Control */}
       <View style={styles.segmentBar}>
@@ -77,9 +83,17 @@ export default function ExercisesScreen() {
             模板
           </Text>
         </Pressable>
+        <Pressable
+          style={[styles.segmentBtn, segment === 'standards' && styles.segmentBtnActive]}
+          onPress={() => setSegment('standards')}
+        >
+          <Text style={[styles.segmentText, segment === 'standards' && styles.segmentTextActive]}>
+            标准
+          </Text>
+        </Pressable>
       </View>
 
-      {segment === 'exercises' ? (
+      {segment === 'exercises' && (
         <>
           <View style={styles.categoryBar}>
             <Pressable
@@ -164,7 +178,8 @@ export default function ExercisesScreen() {
             onCancel={() => setDeleteTarget(null)}
           />
         </>
-      ) : (
+      )}
+      {segment === 'templates' && (
         <FlatList
           data={templates}
           keyExtractor={(item) => item.id}
@@ -198,6 +213,63 @@ export default function ExercisesScreen() {
           ItemSeparatorComponent={() => <View style={{ height: 2 }} />}
         />
       )}
+      {segment === 'standards' && (
+        <>
+          <FlatList
+            data={standards}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
+              <View style={styles.templateCard}>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <Text style={styles.templateName}>{item.name}</Text>
+                  <Pressable onPress={() => removeStandard(item.id)}>
+                    <Text style={{ color: '#FF6B35', fontSize: 16, fontWeight: '700' }}>✕</Text>
+                  </Pressable>
+                </View>
+              </View>
+            )}
+            ListEmptyComponent={
+              <EmptyState icon="📏" title="还没有自定义标准" subtitle="添加你的训练标准，如：力竭、慢放等" />
+            }
+            contentContainerStyle={standards.length === 0 ? styles.emptyList : { paddingBottom: 100 }}
+            ItemSeparatorComponent={() => <View style={{ height: 2 }} />}
+          />
+
+          {showAddStandard ? (
+            <View style={styles.addPanel}>
+              <View style={styles.addPanelHandle} />
+              <Text style={styles.addPanelTitle}>添加自定义标准</Text>
+              <TextInput
+                style={styles.addInput}
+                placeholder="标准名称（如：力竭）"
+                placeholderTextColor="#999"
+                value={newStandardName}
+                onChangeText={setNewStandardName}
+                autoFocus
+              />
+              <View style={styles.addButtons}>
+                <Pressable style={styles.cancelBtn} onPress={() => setShowAddStandard(false)}>
+                  <Text style={styles.cancelText}>取消</Text>
+                </Pressable>
+                <Pressable style={styles.saveBtn} onPress={() => {
+                  if (newStandardName.trim()) {
+                    addStandard(newStandardName.trim());
+                    setNewStandardName('');
+                    setShowAddStandard(false);
+                  }
+                }}>
+                  <Text style={styles.saveText}>保存标准</Text>
+                </Pressable>
+              </View>
+            </View>
+          ) : (
+            <Pressable style={styles.fab} onPress={() => setShowAddStandard(true)}>
+              <Text style={styles.fabIcon}>+</Text>
+              <Text style={styles.fabText}>添加标准</Text>
+            </Pressable>
+          )}
+        </>
+      )}
 
       <ConfirmDialog
         visible={deleteTemplateTarget !== null}
@@ -207,6 +279,7 @@ export default function ExercisesScreen() {
         onCancel={() => setDeleteTemplateTarget(null)}
       />
     </View>
+    </KeyboardAvoidingView>
   );
 }
 

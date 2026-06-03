@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { View, Text, ScrollView, Pressable, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, Pressable, KeyboardAvoidingView, StyleSheet } from 'react-native';
 import { getDatabase } from '@/db/database';
 import { EmptyState } from '@/components/EmptyState';
 import { exportData, importData } from '@/utils/backup';
@@ -54,6 +54,7 @@ export default function StatsScreen() {
   const maxVolume = stats.length > 0 ? Math.max(...stats.map((s) => s.total_volume)) : 1;
 
   return (
+    <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
     <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 40 }}>
       <Text style={styles.pageTitle}>训练统计</Text>
 
@@ -138,6 +139,7 @@ export default function StatsScreen() {
         </Pressable>
       </View>
     </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 

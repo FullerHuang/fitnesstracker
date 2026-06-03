@@ -7,12 +7,14 @@ import {
   TextInput,
   Modal,
   Alert,
+  KeyboardAvoidingView,
   StyleSheet,
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useExerciseStore } from '@/stores/useExerciseStore';
 import { useTrainingStore } from '@/stores/useTrainingStore';
 import { useTemplateStore } from '@/stores/useTemplateStore';
+import { useCustomStandardStore } from '@/stores/useCustomStandardStore';
 import { parseTemplateData } from '@/db/templates';
 import { SetEditor } from '@/components/SetEditor';
 import { SetData } from '@/components/SetRow';
@@ -25,11 +27,11 @@ export default function RecordScreen() {
   const { exercises, loadExercises } = useExerciseStore();
   const { loadSessionsByDate } = useTrainingStore();
   const { templates, loadTemplates } = useTemplateStore();
+  const { standards, loadStandards } = useCustomStandardStore();
 
   const [step, setStep] = useState<'select' | 'record'>('select');
   const [selectedExerciseId, setSelectedExerciseId] = useState<string | null>(null);
   const [sets, setSets] = useState<SetData[]>([]);
-  const [notes, setNotes] = useState('');
   const [videoUrl, setVideoUrl] = useState('');
   const [videoTitle, setVideoTitle] = useState('');
   const [showTemplateModal, setShowTemplateModal] = useState(false);
@@ -37,6 +39,7 @@ export default function RecordScreen() {
   useEffect(() => {
     loadExercises();
     loadTemplates();
+    loadStandards();
   }, []);
 
   const handleStart = () => {
@@ -56,7 +59,7 @@ export default function RecordScreen() {
       return;
     }
 
-    const { addSession, addSet, updateNotes } = useTrainingStore.getState();
+    const { addSession, addSet } = useTrainingStore.getState();
     const session = addSession(selectedExerciseId, date);
 
     validSets.forEach((s) => {
@@ -72,10 +75,6 @@ export default function RecordScreen() {
         custom_fields: JSON.stringify(s.custom_fields),
       });
     });
-
-    if (notes.trim()) {
-      updateNotes(session.id, notes.trim());
-    }
 
     if (videoUrl.trim()) {
       addVideo({
@@ -135,6 +134,7 @@ export default function RecordScreen() {
 
   if (step === 'select') {
     return (
+      <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
       <View style={styles.container}>
         <Text style={styles.stepIndicator}>第 1 步 / 共 2 步</Text>
         <Text style={styles.stepTitle}>选择训练动作</Text>
@@ -216,10 +216,12 @@ export default function RecordScreen() {
           </View>
         </Modal>
       </View>
+      </KeyboardAvoidingView>
     );
   }
 
   return (
+    <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
     <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 40 }}>
       <Text style={styles.stepIndicator}>第 2 步 / 共 2 步</Text>
       <Text style={styles.stepTitle}>{selectedExercise?.name}</Text>
@@ -227,7 +229,7 @@ export default function RecordScreen() {
 
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>训练组数</Text>
-        <SetEditor sets={sets} onChangeSets={setSets} availableStandards={[]} />
+        <SetEditor sets={sets} onChangeSets={setSets} availableStandards={standards} />
       </View>
 
       <View style={styles.section}>
@@ -251,19 +253,6 @@ export default function RecordScreen() {
         </View>
       </View>
 
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>训练心得</Text>
-        <TextInput
-          style={styles.notesInput}
-          placeholder="记录这次训练的心得感受..."
-          placeholderTextColor="#999"
-          value={notes}
-          onChangeText={setNotes}
-          multiline
-          textAlignVertical="top"
-        />
-      </View>
-
       <View style={styles.bottomButtons}>
         <Pressable style={styles.cancelBtn} onPress={() => router.back()}>
           <Text style={styles.cancelText}>放弃</Text>
@@ -273,6 +262,7 @@ export default function RecordScreen() {
         </Pressable>
       </View>
     </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -394,17 +384,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 12,
     fontSize: 14,
-    borderWidth: 1,
-    borderColor: '#E8E8E8',
-  },
-  notesInput: {
-    marginHorizontal: 16,
-    backgroundColor: '#F0F0F0',
-    color: '#111111',
-    borderRadius: 10,
-    padding: 14,
-    fontSize: 14,
-    minHeight: 100,
     borderWidth: 1,
     borderColor: '#E8E8E8',
   },

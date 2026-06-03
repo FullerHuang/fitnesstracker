@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
-import { View, Text, ScrollView, Pressable, TextInput, Modal, Alert, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, Pressable, TextInput, Modal, Alert, KeyboardAvoidingView, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Calendar, DateData } from 'react-native-calendars';
 import { useCalendarStore } from '@/stores/useCalendarStore';
@@ -78,6 +78,7 @@ export default function CalendarScreen() {
   };
 
   return (
+    <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
     <View style={styles.container}>
       <Calendar
         current={selectedDate}
@@ -188,6 +189,7 @@ export default function CalendarScreen() {
         </View>
       </Modal>
     </View>
+    </KeyboardAvoidingView>
   );
 }
 

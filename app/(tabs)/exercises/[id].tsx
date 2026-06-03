@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { View, Text, ScrollView, TextInput, Pressable, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, TextInput, Pressable, Modal, KeyboardAvoidingView, StyleSheet } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useExerciseStore } from '@/stores/useExerciseStore';
 import { useTrainingStore } from '@/stores/useTrainingStore';
@@ -23,6 +23,10 @@ export default function ExerciseDetailScreen() {
   const [videoUrl, setVideoUrl] = useState('');
   const [videoTitle, setVideoTitle] = useState('');
   const [deleteVideoId, setDeleteVideoId] = useState<string | null>(null);
+  const [editModal, setEditModal] = useState(false);
+  const [editName, setEditName] = useState('');
+  const [editCategory, setEditCategory] = useState('');
+  const [notes, setNotes] = useState('');
 
   useEffect(() => {
     const sess = useTrainingStore.getState().loadSessionsByExercise(id);
@@ -57,13 +61,16 @@ export default function ExerciseDetailScreen() {
   }
 
   return (
+    <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
     <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 40 }}>
-      <View style={styles.heroSection}>
-        <Text style={styles.heroName}>{exercise.name}</Text>
-        <View style={styles.heroBadge}>
-          <Text style={styles.heroBadgeText}>{exercise.category}</Text>
+      <Pressable onPress={() => { setEditName(exercise.name); setEditCategory(exercise.category || ''); setEditModal(true); }}>
+        <View style={styles.heroSection}>
+          <Text style={styles.heroName}>{exercise.name}</Text>
+          <View style={styles.heroBadge}>
+            <Text style={styles.heroBadgeText}>{exercise.category}</Text>
+          </View>
         </View>
-      </View>
+      </Pressable>
 
       <View style={styles.sectionHeader}>
         <Text style={styles.sectionTitle}>训练历史</Text>
@@ -87,6 +94,24 @@ export default function ExerciseDetailScreen() {
           />
         ))
       )}
+
+      <View style={styles.sectionHeader}>
+        <Text style={styles.sectionTitle}>训练心得</Text>
+      </View>
+      <TextInput
+        style={styles.notesInput}
+        value={notes}
+        onChangeText={setNotes}
+        multiline
+        textAlignVertical="top"
+        placeholder="记录这个动作的训练心得..."
+        placeholderTextColor="#999"
+      />
+      <Pressable style={styles.saveNotesBtn} onPress={() => {
+        useExerciseStore.getState().editExercise(exercise.id, { notes: notes.trim() });
+      }}>
+        <Text style={styles.saveNotesBtnText}>保存笔记</Text>
+      </Pressable>
 
       <View style={styles.sectionHeader}>
         <Text style={styles.sectionTitle}>参考视频</Text>
@@ -143,7 +168,45 @@ export default function ExerciseDetailScreen() {
         onConfirm={handleDeleteVideo}
         onCancel={() => setDeleteVideoId(null)}
       />
+
+      <Modal visible={editModal} transparent animationType="fade">
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalCard}>
+            <Text style={styles.modalTitle}>编辑动作</Text>
+            <TextInput
+              style={styles.addInput}
+              placeholder="动作名称"
+              placeholderTextColor="#999"
+              value={editName}
+              onChangeText={setEditName}
+              autoFocus
+            />
+            <TextInput
+              style={styles.addInput}
+              placeholder="分类（选填）"
+              placeholderTextColor="#999"
+              value={editCategory}
+              onChangeText={setEditCategory}
+            />
+            <View style={styles.modalButtons}>
+              <Pressable style={styles.cancelBtn} onPress={() => setEditModal(false)}>
+                <Text style={styles.cancelText}>取消</Text>
+              </Pressable>
+              <Pressable style={styles.saveBtnSmall} onPress={() => {
+                useExerciseStore.getState().editExercise(exercise.id, {
+                  name: editName.trim(),
+                  category: editCategory.trim() || undefined,
+                });
+                setEditModal(false);
+              }}>
+                <Text style={styles.saveTextSmall}>保存</Text>
+              </Pressable>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -156,7 +219,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#F0F0F0',
   },
-  heroName: { fontSize: 26, fontWeight: '800', color: '#fff', letterSpacing: 1 },
+  heroName: { fontSize: 26, fontWeight: '800', color: '#111111', letterSpacing: 1 },
   heroBadge: {
     marginTop: 8,
     paddingHorizontal: 14,
@@ -216,4 +279,51 @@ const styles = StyleSheet.create({
     borderStyle: 'dashed',
   },
   addVideoBtnText: { color: '#FF6B35', fontSize: 14, fontWeight: '600' },
+  notesInput: {
+    marginHorizontal: 16,
+    backgroundColor: '#F0F0F0',
+    color: '#111111',
+    borderRadius: 10,
+    padding: 14,
+    fontSize: 14,
+    minHeight: 80,
+    borderWidth: 1,
+    borderColor: '#E8E8E8',
+  },
+  saveNotesBtn: {
+    marginHorizontal: 16,
+    marginTop: 10,
+    paddingVertical: 12,
+    backgroundColor: '#F0F0F0',
+    borderRadius: 10,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#E8E8E8',
+  },
+  saveNotesBtnText: { color: '#FF6B35', fontSize: 14, fontWeight: '600' },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalCard: {
+    width: 300,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    padding: 24,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#111111',
+    marginBottom: 16,
+    textAlign: 'center',
+  },
+  modalButtons: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    gap: 12,
+    marginTop: 8,
+  },
 });

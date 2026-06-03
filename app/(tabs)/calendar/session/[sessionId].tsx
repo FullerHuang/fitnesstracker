@@ -7,11 +7,13 @@ import {
   TextInput,
   Image,
   Alert,
+  KeyboardAvoidingView,
   StyleSheet,
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
-import { getSessionById, updateSessionNotes, deleteSession, SessionWithExercise } from '@/db/sessions';
+import { getSessionById, deleteSession, SessionWithExercise } from '@/db/sessions';
+import { getExerciseById, updateExercise } from '@/db/exercises';
 import { getSetsBySession, updateSet, deleteSet, TrainingSet } from '@/db/sets';
 import { getImagesBySession, addImage, deleteImage, SessionImage } from '@/db/notes';
 import { getVideosBySession, deleteVideo, addVideo, ExerciseVideo } from '@/db/videos';
@@ -19,6 +21,7 @@ import { SetRow, SetData } from '@/components/SetRow';
 import { VideoCard } from '@/components/VideoCard';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
 import { detectPlatform } from '@/utils/videoPlatform';
+import { useCustomStandardStore } from '@/stores/useCustomStandardStore';
 
 export default function SessionDetailScreen() {
   const { sessionId } = useLocalSearchParams<{ sessionId: string }>();
@@ -34,6 +37,7 @@ export default function SessionDetailScreen() {
   const [videoTitle, setVideoTitle] = useState('');
   const [deleteVideoId, setDeleteVideoId] = useState<string | null>(null);
   const [deleteImageId, setDeleteImageId] = useState<string | null>(null);
+  const { standards, loadStandards } = useCustomStandardStore();
 
   useEffect(() => {
     const sess = getSessionById(sessionId);
@@ -41,7 +45,11 @@ export default function SessionDetailScreen() {
     setSets(getSetsBySession(sessionId));
     setImages(getImagesBySession(sessionId));
     setVideos(getVideosBySession(sessionId));
-    if (sess) setNotes(sess.notes);
+    if (sess) {
+      const ex = getExerciseById(sess.exercise_id);
+      setNotes(ex?.notes || '');
+    }
+    loadStandards();
   }, [sessionId]);
 
   const refreshSets = () => setSets(getSetsBySession(sessionId));
@@ -49,8 +57,10 @@ export default function SessionDetailScreen() {
   const refreshVideos = () => setVideos(getVideosBySession(sessionId));
 
   const handleSaveNotes = () => {
-    updateSessionNotes(sessionId, notes);
-    Alert.alert('已保存', '笔记已更新');
+    if (session) {
+      updateExercise(session.exercise_id, { notes });
+      Alert.alert('已保存', '笔记已更新');
+    }
   };
 
   const handlePickImage = async () => {
@@ -122,6 +132,7 @@ export default function SessionDetailScreen() {
   }
 
   return (
+    <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
     <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 50 }}>
       <View style={styles.hero}>
         <Text style={styles.heroName}>{session.exercise_name}</Text>
@@ -153,7 +164,7 @@ export default function SessionDetailScreen() {
               rpe: s.rpe,
               custom_fields: JSON.parse(s.custom_fields),
             }}
-            availableStandards={[]}
+            availableStandards={standards}
             onChange={(data) => handleSetChange(i, data)}
             onDelete={() => handleSetDelete(s.id)}
           />
@@ -265,6 +276,7 @@ export default function SessionDetailScreen() {
         onCancel={() => setDeleteImageId(null)}
       />
     </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 

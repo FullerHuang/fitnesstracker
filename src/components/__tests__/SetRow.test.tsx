@@ -5,14 +5,18 @@ import type { SetData } from '../SetRow';
 describe('SetRow', () => {
   const defaultSet: SetData = {
     set_number: 1,
+    target_weight: 0,
+    target_reps: 0,
+    target_rpe: null,
     weight: 60,
     reps: 8,
     rpe: 7,
-    is_pr: false,
+    custom_fields: [],
   };
 
   const defaultProps = {
     set: defaultSet,
+    availableStandards: [],
     onChange: jest.fn(),
     onDelete: jest.fn(),
   };
@@ -35,15 +39,10 @@ describe('SetRow', () => {
 
   it('RPE 为 null 时显示占位符', () => {
     const set: SetData = { ...defaultSet, rpe: null };
-    const { getByPlaceholderText } = render(
+    const { getAllByPlaceholderText } = render(
       <SetRow {...defaultProps} set={set} />
     );
-    expect(getByPlaceholderText('-')).toBeTruthy();
-  });
-
-  it('PR switch 关闭时渲染', () => {
-    const { getByText } = render(<SetRow {...defaultProps} />);
-    expect(getByText('PR')).toBeTruthy();
+    expect(getAllByPlaceholderText('-').length).toBeGreaterThanOrEqual(1);
   });
 
   it('点击删除按钮触发 onDelete', () => {
@@ -51,7 +50,7 @@ describe('SetRow', () => {
     const { getByText } = render(
       <SetRow {...defaultProps} onDelete={onDelete} />
     );
-    fireEvent.press(getByText('X'));
+    fireEvent.press(getByText('✕'));
     expect(onDelete).toHaveBeenCalledTimes(1);
   });
 
