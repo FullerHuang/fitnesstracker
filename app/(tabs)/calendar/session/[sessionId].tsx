@@ -59,7 +59,6 @@ export default function SessionDetailScreen() {
   const handleSaveNotes = () => {
     if (session) {
       updateExercise(session.exercise_id, { notes });
-      Alert.alert('已保存', '笔记已更新');
     }
   };
 
@@ -178,14 +177,12 @@ export default function SessionDetailScreen() {
         style={styles.notesInput}
         value={notes}
         onChangeText={setNotes}
+        onBlur={handleSaveNotes}
         multiline
         textAlignVertical="top"
         placeholder="记录这次训练的心得..."
         placeholderTextColor="#999"
       />
-      <Pressable style={styles.saveNotesBtn} onPress={handleSaveNotes}>
-        <Text style={styles.saveNotesBtnText}>保存笔记</Text>
-      </Pressable>
 
       <View style={styles.sectionHeader}>
         <Text style={styles.sectionTitle}>照片</Text>
@@ -283,7 +280,7 @@ export default function SessionDetailScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#F8F9FA' },
   hero: { alignItems: 'center', paddingVertical: 24, paddingHorizontal: 16 },
-  heroName: { fontSize: 26, fontWeight: '800', color: '#fff', letterSpacing: 1 },
+  heroName: { fontSize: 26, fontWeight: '800', color: '#111111', letterSpacing: 1 },
   heroMeta: { flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: 8 },
   heroBadge: {
     paddingHorizontal: 12,
