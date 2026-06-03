@@ -97,9 +97,13 @@ export default function SessionDetailScreen() {
   const handleSetChange = (index: number, data: SetData) => {
     const set = sets[index];
     updateSet(set.id, {
+      target_weight: data.target_weight,
+      target_reps: data.target_reps,
+      target_rpe: data.target_rpe,
       weight: data.weight,
       reps: data.reps,
       rpe: data.rpe,
+      custom_fields: JSON.stringify(data.custom_fields),
     });
     refreshSets();
   };
@@ -141,11 +145,15 @@ export default function SessionDetailScreen() {
             key={s.id}
             set={{
               set_number: s.set_number,
+              target_weight: s.target_weight,
+              target_reps: s.target_reps,
+              target_rpe: s.target_rpe,
               weight: s.weight,
               reps: s.reps,
               rpe: s.rpe,
-              is_pr: false,
+              custom_fields: JSON.parse(s.custom_fields),
             }}
+            availableStandards={[]}
             onChange={(data) => handleSetChange(i, data)}
             onDelete={() => handleSetDelete(s.id)}
           />

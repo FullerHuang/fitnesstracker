@@ -45,7 +45,7 @@ export default function RecordScreen() {
       return;
     }
     setStep('record');
-    setSets([{ set_number: 1, weight: 0, reps: 0, rpe: null, is_pr: false }]);
+    setSets([{ set_number: 1, target_weight: 0, target_reps: 0, target_rpe: null, weight: 0, reps: 0, rpe: null, custom_fields: [] }]);
   };
 
   const handleSave = () => {
@@ -63,11 +63,13 @@ export default function RecordScreen() {
       addSet({
         session_id: session.id,
         set_number: s.set_number,
-        target_weight: 0,
-        target_reps: 0,
+        target_weight: s.target_weight,
+        target_reps: s.target_reps,
+        target_rpe: s.target_rpe,
         weight: s.weight,
         reps: s.reps,
         rpe: s.rpe,
+        custom_fields: JSON.stringify(s.custom_fields),
       });
     });
 
@@ -108,11 +110,13 @@ export default function RecordScreen() {
         addSet({
           session_id: session.id,
           set_number: s.set_number,
-          target_weight: 0,
-          target_reps: 0,
+          target_weight: s.target_weight,
+          target_reps: s.target_reps,
+          target_rpe: s.target_rpe,
           weight: s.weight,
           reps: s.reps,
           rpe: s.rpe,
+          custom_fields: JSON.stringify(s.custom_fields),
         });
       });
       created++;
@@ -223,7 +227,7 @@ export default function RecordScreen() {
 
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>训练组数</Text>
-        <SetEditor sets={sets} onChangeSets={setSets} />
+        <SetEditor sets={sets} onChangeSets={setSets} availableStandards={[]} />
       </View>
 
       <View style={styles.section}>

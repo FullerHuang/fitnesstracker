@@ -13,9 +13,13 @@ export interface TemplateExercise {
   category: string;
   sets: {
     set_number: number;
+    target_weight: number;
+    target_reps: number;
+    target_rpe: number | null;
     weight: number;
     reps: number;
     rpe: number | null;
+    custom_fields: { name: string; target: number; actual: number }[];
   }[];
 }
 

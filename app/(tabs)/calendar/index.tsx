@@ -63,9 +63,13 @@ export default function CalendarScreen() {
       category: s.category,
       sets: getSetsBySession(s.id).map((ts) => ({
         set_number: ts.set_number,
+        target_weight: ts.target_weight,
+        target_reps: ts.target_reps,
+        target_rpe: ts.target_rpe,
         weight: ts.weight,
         reps: ts.reps,
         rpe: ts.rpe,
+        custom_fields: JSON.parse(ts.custom_fields),
       })),
     }));
     addTemplate(templateName.trim(), data);

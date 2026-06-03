@@ -3,21 +3,24 @@ import { SetRow, SetData } from './SetRow';
 
 interface Props {
   sets: SetData[];
+  availableStandards: { id: string; name: string }[];
   onChangeSets: (sets: SetData[]) => void;
 }
 
-export function SetEditor({ sets, onChangeSets }: Props) {
+export function SetEditor({ sets, availableStandards, onChangeSets }: Props) {
   const addSet = () => {
-    const lastWeight = sets.length > 0 ? sets[sets.length - 1].weight : 0;
-    const lastReps = sets.length > 0 ? sets[sets.length - 1].reps : 0;
+    const last = sets.length > 0 ? sets[sets.length - 1] : null;
     onChangeSets([
       ...sets,
       {
         set_number: sets.length + 1,
-        weight: lastWeight,
-        reps: lastReps,
-        rpe: null,
-        is_pr: false,
+        target_weight: last ? last.target_weight : 0,
+        target_reps: last ? last.target_reps : 0,
+        target_rpe: last ? last.target_rpe : null,
+        weight: last ? last.weight : 0,
+        reps: last ? last.reps : 0,
+        rpe: last ? last.rpe : null,
+        custom_fields: last ? last.custom_fields.map((cf) => ({ ...cf, actual: 0 })) : [],
       },
     ]);
   };
@@ -31,10 +34,7 @@ export function SetEditor({ sets, onChangeSets }: Props) {
   const removeSet = (index: number) => {
     const updated = sets
       .filter((_, i) => i !== index)
-      .map((s, i) => ({
-        ...s,
-        set_number: i + 1,
-      }));
+      .map((s, i) => ({ ...s, set_number: i + 1 }));
     onChangeSets(updated);
   };
 
@@ -44,6 +44,7 @@ export function SetEditor({ sets, onChangeSets }: Props) {
         <SetRow
           key={i}
           set={s}
+          availableStandards={availableStandards}
           onChange={(data) => updateSet(i, data)}
           onDelete={() => removeSet(i)}
         />
