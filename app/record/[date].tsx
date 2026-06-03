@@ -63,10 +63,11 @@ export default function RecordScreen() {
       addSet({
         session_id: session.id,
         set_number: s.set_number,
+        target_weight: 0,
+        target_reps: 0,
         weight: s.weight,
         reps: s.reps,
         rpe: s.rpe,
-        is_pr: s.is_pr,
       });
     });
 
@@ -107,10 +108,11 @@ export default function RecordScreen() {
         addSet({
           session_id: session.id,
           set_number: s.set_number,
+          target_weight: 0,
+          target_reps: 0,
           weight: s.weight,
           reps: s.reps,
           rpe: s.rpe,
-          is_pr: s.is_pr,
         });
       });
       created++;

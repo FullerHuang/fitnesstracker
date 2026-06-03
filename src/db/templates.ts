@@ -16,7 +16,6 @@ export interface TemplateExercise {
     weight: number;
     reps: number;
     rpe: number | null;
-    is_pr: boolean;
   }[];
 }
 

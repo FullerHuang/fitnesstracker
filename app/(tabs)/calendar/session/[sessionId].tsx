@@ -100,7 +100,6 @@ export default function SessionDetailScreen() {
       weight: data.weight,
       reps: data.reps,
       rpe: data.rpe,
-      is_pr: data.is_pr,
     });
     refreshSets();
   };
@@ -145,7 +144,7 @@ export default function SessionDetailScreen() {
               weight: s.weight,
               reps: s.reps,
               rpe: s.rpe,
-              is_pr: !!s.is_pr,
+              is_pr: false,
             }}
             onChange={(data) => handleSetChange(i, data)}
             onDelete={() => handleSetDelete(s.id)}

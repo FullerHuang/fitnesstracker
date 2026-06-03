@@ -102,11 +102,13 @@ export const useTrainingStore = create<TrainingState>((set) => ({
         if (ts.id !== id) return ts;
         return {
           ...ts,
+          target_weight: input.target_weight ?? ts.target_weight,
+          target_reps: input.target_reps ?? ts.target_reps,
+          target_rpe: input.target_rpe !== undefined ? input.target_rpe : ts.target_rpe,
           weight: input.weight ?? ts.weight,
           reps: input.reps ?? ts.reps,
           rpe: input.rpe !== undefined ? input.rpe : ts.rpe,
-          is_pr: input.is_pr !== undefined ? (input.is_pr ? 1 : 0) : ts.is_pr,
-          extra_fields: input.extra_fields ? JSON.stringify(input.extra_fields) : ts.extra_fields,
+          custom_fields: input.custom_fields ?? ts.custom_fields,
         };
       }),
     }));

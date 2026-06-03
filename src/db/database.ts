@@ -88,10 +88,21 @@ export function initializeDatabase(): void {
       created_at INTEGER NOT NULL
     );
 
+    CREATE TABLE IF NOT EXISTS custom_standards (
+      id TEXT PRIMARY KEY,
+      name TEXT NOT NULL UNIQUE,
+      created_at INTEGER NOT NULL
+    );
+
     CREATE INDEX IF NOT EXISTS idx_sessions_date ON training_sessions(date);
     CREATE INDEX IF NOT EXISTS idx_sessions_exercise ON training_sessions(exercise_id);
     CREATE INDEX IF NOT EXISTS idx_sets_session ON training_sets(session_id);
   `);
+
+  // Migrations — ignore errors if columns already exist
+  try { database.execSync('ALTER TABLE training_sets ADD COLUMN target_weight REAL NOT NULL DEFAULT 0;'); } catch {}
+  try { database.execSync('ALTER TABLE training_sets ADD COLUMN target_reps INTEGER NOT NULL DEFAULT 0;'); } catch {}
+  try { database.execSync('ALTER TABLE training_sets ADD COLUMN target_rpe REAL;'); } catch {}
 
   initialized = true;
 }

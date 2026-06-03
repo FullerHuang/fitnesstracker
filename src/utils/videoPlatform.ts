@@ -23,10 +23,10 @@ export function getPlatformLabel(platform: VideoPlatform): string {
 }
 
 export async function openVideo(url: string): Promise<boolean> {
-  const canOpen = await Linking.canOpenURL(url);
-  if (canOpen) {
+  try {
     await Linking.openURL(url);
     return true;
+  } catch {
+    return false;
   }
-  return false;
 }

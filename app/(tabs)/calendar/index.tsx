@@ -66,7 +66,6 @@ export default function CalendarScreen() {
         weight: ts.weight,
         reps: ts.reps,
         rpe: ts.rpe,
-        is_pr: ts.is_pr === 1,
       })),
     }));
     addTemplate(templateName.trim(), data);
