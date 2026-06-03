@@ -232,6 +232,13 @@ export default function RecordScreen() {
         <SetEditor sets={sets} onChangeSets={setSets} availableStandards={standards} />
       </View>
 
+      {selectedExercise && (
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>训练心得</Text>
+          <Text style={[styles.notesPreview, { color: selectedExercise.notes ? '#111111' : '#999999' }]}>{selectedExercise.notes || '暂无心得'}</Text>
+        </View>
+      )}
+
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>视频参考</Text>
         <View style={styles.videoRow}>
@@ -365,6 +372,11 @@ const styles = StyleSheet.create({
     color: '#111111',
     paddingHorizontal: 16,
     marginBottom: 10,
+  },
+  notesPreview: {
+    marginHorizontal: 16,
+    fontSize: 14,
+    lineHeight: 20,
   },
   videoRow: { flexDirection: 'row', paddingHorizontal: 16, gap: 8 },
   addInput: {

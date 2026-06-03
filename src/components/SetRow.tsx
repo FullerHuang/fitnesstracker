@@ -67,7 +67,7 @@ export function SetRow({ set, availableStandards, onChange, onDelete }: Props) {
           <Text style={styles.label}>重量(kg)</Text>
           <TextInput
             style={styles.input}
-            keyboardType="decimal-pad"
+            keyboardType="numeric"
             value={set.target_weight > 0 ? String(set.target_weight) : ''}
             placeholder="0"
             placeholderTextColor="#999"
@@ -89,29 +89,35 @@ export function SetRow({ set, availableStandards, onChange, onDelete }: Props) {
           <Text style={styles.label}>RPE</Text>
           <TextInput
             style={styles.inputSmall}
-            keyboardType="decimal-pad"
+            keyboardType="numeric"
             value={set.target_rpe !== null ? String(set.target_rpe) : ''}
             placeholder="-"
             placeholderTextColor="#999"
             onChangeText={(v) => onChange({ ...set, target_rpe: v ? parseFloat(v) : null })}
           />
         </View>
+        {set.custom_fields.length > 0 && (
+          <>
+            {set.custom_fields.map((cf, i) => (
+              <View key={i} style={styles.field}>
+                <Text style={styles.label}>{cf.name}</Text>
+                <TextInput
+                  style={styles.inputSmall}
+                  keyboardType="numeric"
+                  value={cf.target > 0 ? String(cf.target) : ''}
+                  placeholder="0"
+                  placeholderTextColor="#999"
+                  onChangeText={(v) => {
+                    const num = parseFloat(v);
+                    updateCustomTarget(i, isNaN(num) ? 0 : num);
+                  }}
+                />
+                <Text style={styles.customRemove} onPress={() => removeCustomField(i)}>✕</Text>
+              </View>
+            ))}
+          </>
+        )}
       </View>
-
-      {set.custom_fields.map((cf, i) => (
-        <View key={i} style={styles.customRow}>
-          <Text style={styles.customName}>{cf.name}</Text>
-          <TextInput
-            style={styles.inputSmall}
-            keyboardType="decimal-pad"
-            value={cf.target > 0 ? String(cf.target) : ''}
-            placeholder="目标"
-            placeholderTextColor="#999"
-            onChangeText={(v) => updateCustomTarget(i, parseFloat(v) || 0)}
-          />
-          <Text style={styles.customRemove} onPress={() => removeCustomField(i)}>✕</Text>
-        </View>
-      ))}
 
       {unusedStandards.length > 0 && (
         <Pressable style={styles.addCustomBtn} onPress={() => setShowStandardPicker(true)}>
@@ -126,7 +132,7 @@ export function SetRow({ set, availableStandards, onChange, onDelete }: Props) {
           <Text style={styles.label}>重量(kg)</Text>
           <TextInput
             style={styles.input}
-            keyboardType="decimal-pad"
+            keyboardType="numeric"
             value={set.weight > 0 ? String(set.weight) : ''}
             placeholder="0"
             placeholderTextColor="#999"
@@ -148,28 +154,34 @@ export function SetRow({ set, availableStandards, onChange, onDelete }: Props) {
           <Text style={styles.label}>RPE</Text>
           <TextInput
             style={styles.inputSmall}
-            keyboardType="decimal-pad"
+            keyboardType="numeric"
             value={set.rpe !== null ? String(set.rpe) : ''}
             placeholder="-"
             placeholderTextColor="#999"
             onChangeText={(v) => onChange({ ...set, rpe: v ? parseFloat(v) : null })}
           />
         </View>
+        {set.custom_fields.length > 0 && (
+          <>
+            {set.custom_fields.map((cf, i) => (
+              <View key={i} style={styles.field}>
+                <Text style={styles.label}>{cf.name}</Text>
+                <TextInput
+                  style={styles.inputSmall}
+                  keyboardType="numeric"
+                  value={cf.actual > 0 ? String(cf.actual) : ''}
+                  placeholder="0"
+                  placeholderTextColor="#999"
+                  onChangeText={(v) => {
+                    const num = parseFloat(v);
+                    updateCustomActual(i, isNaN(num) ? 0 : num);
+                  }}
+                />
+              </View>
+            ))}
+          </>
+        )}
       </View>
-
-      {set.custom_fields.map((cf, i) => (
-        <View key={i} style={styles.customRow}>
-          <Text style={styles.customName}>{cf.name}</Text>
-          <TextInput
-            style={styles.inputSmall}
-            keyboardType="decimal-pad"
-            value={cf.actual > 0 ? String(cf.actual) : ''}
-            placeholder="完成"
-            placeholderTextColor="#999"
-            onChangeText={(v) => updateCustomActual(i, parseFloat(v) || 0)}
-          />
-        </View>
-      ))}
 
       {/* Standard Picker Modal */}
       <Modal visible={showStandardPicker} transparent animationType="fade">
@@ -216,7 +228,7 @@ const styles = StyleSheet.create({
     marginBottom: 6,
     marginTop: 4,
   },
-  fieldRow: { flexDirection: 'row', gap: 8 },
+  fieldRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
   field: { alignItems: 'center' },
   label: { fontSize: 10, color: '#777777', marginBottom: 2 },
   input: {
@@ -239,13 +251,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     textAlign: 'center',
   },
-  customRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    marginTop: 8,
-  },
-  customName: { fontSize: 13, color: '#555555', width: 80 },
   customRemove: { color: '#FF6B35', fontSize: 14, fontWeight: '700', padding: 4 },
   addCustomBtn: {
     marginTop: 8,

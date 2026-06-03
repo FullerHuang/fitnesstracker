@@ -56,7 +56,7 @@ export function initializeDatabase(): void {
       reps INTEGER NOT NULL DEFAULT 0,
       rpe REAL,
       is_pr INTEGER NOT NULL DEFAULT 0,
-      extra_fields TEXT DEFAULT '{}',
+      custom_fields TEXT DEFAULT '[]',
       created_at INTEGER NOT NULL,
       FOREIGN KEY (session_id) REFERENCES training_sessions(id) ON DELETE CASCADE
     );
@@ -100,6 +100,7 @@ export function initializeDatabase(): void {
   `);
 
   // Migrations — ignore errors if columns already exist
+  try { database.execSync('ALTER TABLE training_sets RENAME COLUMN extra_fields TO custom_fields;'); } catch (e) {}
   try { database.execSync('ALTER TABLE training_sets ADD COLUMN target_weight REAL NOT NULL DEFAULT 0;'); } catch {}
   try { database.execSync('ALTER TABLE training_sets ADD COLUMN target_reps INTEGER NOT NULL DEFAULT 0;'); } catch {}
   try { database.execSync('ALTER TABLE training_sets ADD COLUMN target_rpe REAL;'); } catch {}
