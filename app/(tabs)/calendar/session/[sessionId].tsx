@@ -172,6 +172,37 @@ export default function SessionDetailScreen() {
       )}
 
       <View style={styles.sectionHeader}>
+        <Text style={styles.sectionTitle}>训练心得</Text>
+      </View>
+      <TextInput
+        style={styles.notesInput}
+        value={notes}
+        onChangeText={setNotes}
+        multiline
+        textAlignVertical="top"
+        placeholder="记录这次训练的心得..."
+        placeholderTextColor="#999"
+      />
+      <Pressable style={styles.saveNotesBtn} onPress={handleSaveNotes}>
+        <Text style={styles.saveNotesBtnText}>保存笔记</Text>
+      </Pressable>
+
+      <View style={styles.sectionHeader}>
+        <Text style={styles.sectionTitle}>照片</Text>
+        {images.length > 0 && <Text style={styles.sectionCount}>{images.length}</Text>}
+      </View>
+      <View style={styles.imageGrid}>
+        {images.map((img) => (
+          <Pressable key={img.id} onLongPress={() => setDeleteImageId(img.id)}>
+            <Image source={{ uri: img.uri }} style={styles.thumb} />
+          </Pressable>
+        ))}
+        <Pressable style={styles.addImageBtn} onPress={handlePickImage}>
+          <Text style={styles.addImageBtnText}>+</Text>
+        </Pressable>
+      </View>
+
+      <View style={styles.sectionHeader}>
         <Text style={styles.sectionTitle}>参考视频</Text>
         {videos.length > 0 && <Text style={styles.sectionCount}>{videos.length}</Text>}
       </View>
@@ -215,37 +246,6 @@ export default function SessionDetailScreen() {
           <Text style={styles.addBtnText}>+ 添加视频</Text>
         </Pressable>
       )}
-
-      <View style={styles.sectionHeader}>
-        <Text style={styles.sectionTitle}>训练心得</Text>
-      </View>
-      <TextInput
-        style={styles.notesInput}
-        value={notes}
-        onChangeText={setNotes}
-        multiline
-        textAlignVertical="top"
-        placeholder="记录这次训练的心得..."
-        placeholderTextColor="#999"
-      />
-      <Pressable style={styles.saveNotesBtn} onPress={handleSaveNotes}>
-        <Text style={styles.saveNotesBtnText}>保存笔记</Text>
-      </Pressable>
-
-      <View style={styles.sectionHeader}>
-        <Text style={styles.sectionTitle}>照片</Text>
-        {images.length > 0 && <Text style={styles.sectionCount}>{images.length}</Text>}
-      </View>
-      <View style={styles.imageGrid}>
-        {images.map((img) => (
-          <Pressable key={img.id} onLongPress={() => setDeleteImageId(img.id)}>
-            <Image source={{ uri: img.uri }} style={styles.thumb} />
-          </Pressable>
-        ))}
-        <Pressable style={styles.addImageBtn} onPress={handlePickImage}>
-          <Text style={styles.addImageBtnText}>+</Text>
-        </Pressable>
-      </View>
 
       <Pressable style={styles.deleteSessionBtn} onPress={() => setShowDeleteConfirm(true)}>
         <Text style={styles.deleteSessionText}>删除此训练记录</Text>

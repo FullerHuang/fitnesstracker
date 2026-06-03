@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { View, Text, ScrollView, TextInput, Pressable, Modal, KeyboardAvoidingView, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, TextInput, Pressable, Modal, Alert, KeyboardAvoidingView, StyleSheet } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useExerciseStore } from '@/stores/useExerciseStore';
 import { useTrainingStore } from '@/stores/useTrainingStore';
@@ -32,6 +32,11 @@ export default function ExerciseDetailScreen() {
     const sess = useTrainingStore.getState().loadSessionsByExercise(id);
     setSessions(sess);
     setVideos(getVideosByExercise(id));
+  }, [id]);
+
+  useEffect(() => {
+    const ex = useExerciseStore.getState().getById(id);
+    if (ex) setNotes(ex.notes || '');
   }, [id]);
 
   const handleAddVideo = () => {
@@ -109,6 +114,7 @@ export default function ExerciseDetailScreen() {
       />
       <Pressable style={styles.saveNotesBtn} onPress={() => {
         useExerciseStore.getState().editExercise(exercise.id, { notes: notes.trim() });
+        Alert.alert('已保存', '心得已更新');
       }}>
         <Text style={styles.saveNotesBtnText}>保存笔记</Text>
       </Pressable>
